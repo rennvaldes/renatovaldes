@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Renato Valdés Olmos</title>
+  <title>Renato Valdés-Olmos</title>
   <meta name="description" content="Designer, builder, investor. Co-founder at GrowthX and Noord. Previously Lyft, Grammarly, Pitch, Honor." />
   <link rel="stylesheet" href="https://use.typekit.net/pyc5dov.css">
   <style>
@@ -28,8 +28,8 @@
       --text: #1a1a1a;
       --text-secondary: #6b6b6b;
       --accent: #c17f59;
-      --divider: rgba(0,0,0,0.05);
-      --grid-line: rgba(0,0,0,0.018);
+      --divider: rgba(0,0,0,0.03);
+      --grid-line: rgba(0,0,0,0.025);
       --gutter: 20px;
       --transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 
@@ -50,8 +50,8 @@
       --text: #e8e4df;
       --text-secondary: #9a9490;
       --accent: #c17f59;
-      --divider: rgba(255,255,255,0.06);
-      --grid-line: rgba(255,255,255,0.022);
+      --divider: rgba(255,255,255,0.04);
+      --grid-line: rgba(255,255,255,0.01);
     }
 
     *, *::before, *::after {
@@ -86,19 +86,29 @@
     .theme-toggle {
       position: fixed;
       top: 24px;
-      left: 24px;
+      left: 22px;
       z-index: 100;
       background: none;
       border: none;
       cursor: pointer;
       color: var(--text-secondary);
       padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.2s ease;
+      width: 24px;
+      height: 24px;
+      overflow: hidden;
       border-radius: 4px;
       outline: none;
+      padding-bottom: 8px;
+    }
+
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 184px;
+      height: 1px;
+      background: var(--grid-line);
     }
 
     .theme-toggle:hover {
@@ -110,18 +120,52 @@
       outline-offset: 2px;
     }
 
+    .toggle-track {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.15, 1);
+      will-change: transform;
+    }
+
     .icon-sun, .icon-moon {
       width: 16px;
       height: 16px;
-      display: block;
+      flex-shrink: 0;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.15, 1),
+                  opacity 0.5s cubic-bezier(0.4, 0, 0.15, 1);
     }
 
-    [data-theme="dark"] .icon-sun  { display: block; }
-    [data-theme="dark"] .icon-moon { display: none;  }
-    .icon-sun  { display: none;  }
-    .icon-moon { display: block; }
-    [data-theme="light"] .icon-sun  { display: none;  }
-    [data-theme="light"] .icon-moon { display: block; }
+    /* Light mode: show moon (top), sun is below out of view */
+    .toggle-track {
+      transform: translateY(0);
+    }
+
+    .toggle-track .icon-moon {
+      opacity: 1;
+      transform: rotate(0deg);
+    }
+
+    .toggle-track .icon-sun {
+      opacity: 0.4;
+      transform: rotate(-90deg);
+    }
+
+    /* Dark mode: slide track up to show sun, moon sets above */
+    [data-theme="dark"] .toggle-track {
+      transform: translateY(calc(-16px - 8px));
+    }
+
+    [data-theme="dark"] .toggle-track .icon-sun {
+      opacity: 1;
+      transform: rotate(0deg);
+    }
+
+    [data-theme="dark"] .toggle-track .icon-moon {
+      opacity: 0.4;
+      transform: rotate(90deg);
+    }
 
 
     /* ── Main ── */
@@ -129,11 +173,9 @@
     main {
       position: relative;
       z-index: 1;
-      max-width: 640px;
-      margin: 0 auto;
       padding: 0 24px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 184px);
       column-gap: var(--gutter);
     }
 
@@ -146,17 +188,20 @@
       padding-top: 88px;
       padding-bottom: 96px;
       align-content: start;
+      border-bottom: 1px solid var(--grid-line);
     }
 
     .entrance-name {
       grid-column: 1 / -1;
       font-family: 'adhesive-nr-eight', serif;
-      font-size: clamp(28px, 5vw, 38px);
+      font-size: 38px;
       font-weight: 400;
       letter-spacing: 0;
       line-height: 1.2;
       color: var(--text);
-      margin-bottom: 6px;
+      margin-bottom: -2px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--grid-line);
     }
 
     .entrance-role {
@@ -166,6 +211,7 @@
       font-weight: 500;
       letter-spacing: -0.01em;
       margin-bottom: 32px;
+      margin-top: -4px;
     }
 
     .entrance-bio {
@@ -176,10 +222,70 @@
       font-weight: 500;
       letter-spacing: -0.01em;
       margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--grid-line);
     }
 
     .entrance-bio p + p {
       margin-top: 16px;
+    }
+
+    .bio-hover {
+      cursor: default;
+      position: relative;
+    }
+
+    .bio-hover-preview {
+      position: fixed;
+      top: 50%;
+      transform: translateY(calc(-50% + 6px));
+      pointer-events: none;
+      opacity: 0;
+      z-index: 50;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .bio-hover-preview.visible {
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+
+    .bio-hover-preview img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .bio-hover-preview img[src*="grammarly"] {
+      filter: saturate(0.85) contrast(0.95) brightness(1.05);
+    }
+
+    .bio-hover-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(0,0,0,0.08);
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .bio-hover-preview::after {
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .bio-link {
+      color: var(--text);
+      text-decoration: none;
+      background-image: linear-gradient(var(--divider), var(--divider));
+      background-size: calc(100% - 1px) 1px;
+      background-position: 1px 100%;
+      background-repeat: no-repeat;
+      transition: background-image 0.2s ease;
+    }
+
+    .bio-link:hover {
+      background-image: linear-gradient(var(--accent), var(--accent));
     }
 
     .email-link {
@@ -217,38 +323,118 @@
       color: var(--accent);
     }
 
+    /* ── Slot machine ── */
+
+    .slot-wrapper {
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      vertical-align: bottom;
+      height: 1.7em;
+    }
+
+    .slot-word {
+      display: inline-block;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .slot-word.out {
+      opacity: 0;
+      transform: translateY(-0.3em);
+      position: absolute;
+    }
+
+    .slot-word.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* ── Item image preview ── */
 
     .item-preview {
       position: fixed;
-      width: 320px;
+      width: 388px; /* 2 grid cols: 2×184 + 20 */
+      top: 50%;
+      transform: translateY(calc(-50% + 6px));
       pointer-events: none;
       opacity: 0;
       z-index: 50;
       transition: opacity 0.18s ease, transform 0.18s ease;
-      transform: translateY(6px);
-      border-radius: 6px;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
     }
 
     .item-preview.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(-50%);
     }
 
-    .item-preview-img {
+    .item-preview-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background-color: #fdfcfb;
+      border-radius: inherit;
+    }
+
+    .item-preview-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    [data-theme="dark"] .item-preview-media {
+      background-color: #1a1816;
+    }
+
+    [data-theme="dark"] .item-preview-media::after {
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .item-preview-media img,
+    .item-preview-media video {
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .item-preview-media img.contain,
+    .item-preview-media video.contain {
+      object-fit: contain;
+      padding: 0 24px;
+    }
+
+    .item-preview-media .zoom {
+      transform: scale(1.25);
+    }
+
+    .item-preview-media img:first-child,
+    .item-preview-media video:first-child {
+      position: absolute;
+    }
+
+    .item-preview-media .active {
+      opacity: 1;
     }
 
     /* ── Work ── */
 
     .work {
-      grid-column: 1 / -1;
+      grid-column: 1 / span 2;
       display: grid;
-      grid-template-columns: subgrid;
+      grid-template-columns: repeat(2, 184px);
+      column-gap: var(--gutter);
       padding-top: 80px;
       padding-bottom: 0;
       align-content: start;
@@ -266,15 +452,15 @@
     .work-list {
       grid-column: 1 / -1;
       list-style: none;
+      max-width: calc(2 * 184px + 20px);
     }
 
     .work-item {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0 var(--gutter);
-      align-items: baseline;
-      padding: 14px 21px;
-      margin: 0 -21px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 14px 20px;
+      margin: 0 -20px;
       cursor: pointer;
       position: relative;
       border-bottom: 1px solid var(--divider);
@@ -289,6 +475,12 @@
       background-color: rgba(193, 127, 89, 0.04);
     }
 
+    .work-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
     .work-company {
       font-size: 15px;
       font-weight: 700;
@@ -301,21 +493,20 @@
       color: var(--accent);
     }
 
+    .work-year {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      opacity: 0.7;
+    }
+
     .work-role {
       font-size: 14px;
       color: var(--text-secondary);
       font-weight: 500;
       letter-spacing: -0.005em;
       line-height: 1.45;
-    }
-
-    .work-year {
-      font-size: 13px;
-      color: var(--text-secondary);
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      text-align: right;
-      opacity: 0.7;
     }
 
     /* ── Page end (integrated copyright) ── */
@@ -328,6 +519,18 @@
       opacity: 0.45;
       padding-top: 48px;
       padding-bottom: 72px;
+      position: relative;
+    }
+
+    .page-end::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 1px;
+      background: var(--grid-line);
     }
 
     /* ── Focus states ── */
@@ -336,6 +539,14 @@
       outline: 2px solid var(--accent);
       outline-offset: 3px;
       border-radius: 2px;
+    }
+
+    /* ── 3 columns ── */
+
+    @media (min-width: 640px) {
+      main {
+        grid-template-columns: repeat(3, 184px);
+      }
     }
 
     /* ── Left-aligned layout: col 2 anchor ── */
@@ -352,13 +563,9 @@
 
     @media (min-width: 1440px) {
       main {
-        max-width: 844px; /* 4 cols: 4×184 + 3×20 + 2×24 */
         margin-left: 204px;
         margin-right: 0;
-      }
-
-      main {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, 184px);
       }
 
       .entrance-bio,
@@ -366,47 +573,20 @@
         grid-column: 1 / span 3;
       }
 
-      .work-item {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .work-role {
-        grid-column: 2 / 4;
-      }
-
-      .work-year {
-        grid-column: 4;
-      }
     }
 
     /* ── Massive: 5 columns ── */
 
     @media (min-width: 2560px) {
       main {
-        max-width: 1048px; /* 5 cols: 5×184 + 4×20 + 2×24 */
         margin-left: 204px;
         margin-right: 0;
-      }
-
-      main {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(5, 184px);
       }
 
       .entrance-bio,
       .entrance-role {
         grid-column: 1 / span 3;
-      }
-
-      .work-item {
-        grid-template-columns: repeat(5, 1fr);
-      }
-
-      .work-role {
-        grid-column: 2 / 5;
-      }
-
-      .work-year {
-        grid-column: 5;
       }
     }
 
@@ -460,27 +640,12 @@
       }
 
       .work-item {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: auto auto;
-        gap: 3px var(--gutter);
         margin: 0 -18px;
         padding: 13px 18px;
       }
 
-      .work-company {
-        grid-column: 1;
-        grid-row: 1;
-      }
-
       .work-role {
-        grid-column: 1 / -1;
-        grid-row: 2;
         font-size: 13px;
-      }
-
-      .work-year {
-        grid-column: 2;
-        grid-row: 1;
       }
 
       .work-preview {
@@ -497,34 +662,36 @@
 <body>
 
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-    <svg class="icon-moon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M13.5 9.5a6 6 0 0 1-7-7 5.5 5.5 0 1 0 7 7Z" fill="currentColor"/>
-    </svg>
-    <svg class="icon-sun" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="8" cy="8" r="3" fill="currentColor"/>
-      <line x1="8" y1="1" x2="8" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="8" y1="13" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="1" y1="8" x2="3" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="13" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="2.929" y1="2.929" x2="4.343" y2="4.343" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="11.657" y1="11.657" x2="13.071" y2="13.071" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="2.929" y1="13.071" x2="4.343" y2="11.657" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="11.657" y1="4.343" x2="13.071" y2="2.929" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
+    <div class="toggle-track">
+      <svg class="icon-moon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13.5 9.5a6 6 0 0 1-7-7 5.5 5.5 0 1 0 7 7Z" fill="currentColor"/>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="3" fill="currentColor"/>
+        <line x1="8" y1="1" x2="8" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8" y1="13" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="1" y1="8" x2="3" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="13" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2.929" y1="2.929" x2="4.343" y2="4.343" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="11.657" y1="11.657" x2="13.071" y2="13.071" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2.929" y1="13.071" x2="4.343" y2="11.657" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="11.657" y1="4.343" x2="13.071" y2="2.929" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
   </button>
 
   <div class="item-preview" id="itemPreview" aria-hidden="true">
-    <img class="item-preview-img" id="itemPreviewImg" src="" alt="" />
+    <div class="item-preview-media" id="itemPreviewMedia"></div>
   </div>
 
   <main>
 
     <section class="entrance">
-      <h1 class="entrance-name">Renato Valdés Olmos</h1>
+      <h1 class="entrance-name"><span class="bio-hover" data-bio-image="assets/renn.png">Renato Valdés-Olmos</span></h1>
       <p class="entrance-role">Designer, builder, investor</p>
       <div class="entrance-bio">
-        <p>I lead design, brand, and product teams at companies that are trying to do something that matters. I've done it at Lyft, Grammarly, Honor, and Pitch; from founding stages through scale.</p>
-        <p>Right now I'm raising two boys and helping to build GrowthX and Noord.</p>
+        <p>I lead <span class="slot-wrapper" id="slot"></span> at companies that are trying to<br>do something that matters. I've done it at <span class="bio-hover bio-link" data-bio-image="assets/lyft-team.jpg">Lyft</span>, <span class="bio-hover bio-link" data-bio-image="assets/grammarly-team.jpg">Grammarly</span>, and <span class="bio-hover bio-link" data-bio-image="assets/honor-team.jpg">Honor</span>; from founding stages through scale.</p>
+        <p>Right now I'm raising two boys and helping to build <a href="https://growthx.ai" class="bio-link" target="_blank" rel="noopener">GrowthX</a> and <a href="https://noord.vc" class="bio-link" target="_blank" rel="noopener">Noord</a>.</p>
       </div>
       <a href="mailto:contact@renatovaldes.com" class="email-link">contact@renatovaldes.com</a>
       <div class="social-links">
@@ -540,24 +707,24 @@
       <ul class="work-list">
         <li class="work-item"
             data-company="GrowthX"
-            data-role="Founding Designer, Head of Design"
+            data-role="Head of Design"
             data-year="2025"
             data-desc="Education platform for growth leaders and operators"
             data-href="https://growthx.ai"
-            data-preview-image="assets/growthx.png">
-          <span class="work-company">GrowthX</span>
-          <span class="work-role">Founding Designer, Head of Design</span>
-          <span class="work-year">2025</span>
+            data-preview-sequence="assets/growthx.png,assets/growthx-video.mp4,assets/growthx-site.png,assets/growthx-brand.jpg"
+            data-preview-zoom="1">
+          <div class="work-top"><span class="work-company">GrowthX</span><span class="work-year">2025</span></div>
+          <span class="work-role">Head of Design</span>
         </li>
         <li class="work-item"
             data-company="Noord"
             data-role="Co-founder &amp; Investor"
             data-year="2024"
             data-desc="Early-stage venture studio and investment firm"
-            data-href="https://noord.vc">
-          <span class="work-company">Noord</span>
+            data-href="https://noord.vc"
+            data-preview-image="assets/noord.png">
+          <div class="work-top"><span class="work-company">Noord</span><span class="work-year">2024</span></div>
           <span class="work-role">Co-founder &amp; Investor</span>
-          <span class="work-year">2024</span>
         </li>
         <li class="work-item"
             data-company="Peak"
@@ -565,19 +732,18 @@
             data-year="2023"
             data-desc="AI platform for retail decision-making"
             data-href="https://peak.capital">
-          <span class="work-company">Peak</span>
+          <div class="work-top"><span class="work-company">Peak</span><span class="work-year">2023</span></div>
           <span class="work-role">Entrepreneur in Residence</span>
-          <span class="work-year">2023</span>
         </li>
         <li class="work-item"
             data-company="Pitch"
             data-role="VP Product &amp; Design"
             data-year="2022"
             data-desc="Collaborative presentation software for modern teams"
-            data-href="https://pitch.com">
-          <span class="work-company">Pitch</span>
+            data-href="https://pitch.com"
+            data-preview-image="assets/pitch.mp4">
+          <div class="work-top"><span class="work-company">Pitch</span><span class="work-year">2022</span></div>
           <span class="work-role">VP Product &amp; Design</span>
-          <span class="work-year">2022</span>
         </li>
         <li class="work-item"
             data-company="Grammarly"
@@ -585,20 +751,19 @@
             data-year="2020"
             data-desc="AI writing assistant, 30M+ daily users"
             data-href="https://superhuman.com/products/grammarly"
-            data-preview-image="assets/grammarly.png">
-          <span class="work-company">Grammarly</span>
+            data-preview-image="assets/grammarly-new.png">
+          <div class="work-top"><span class="work-company">Grammarly</span><span class="work-year">2020</span></div>
           <span class="work-role">Head of Design</span>
-          <span class="work-year">2020</span>
         </li>
         <li class="work-item"
             data-company="Lyft"
             data-role="Sr Design Director"
             data-year="2018"
             data-desc="On-demand transportation platform"
-            data-href="https://www.lyft.com">
-          <span class="work-company">Lyft</span>
+            data-href="https://www.lyft.com"
+            data-preview-sequence="assets/lyft-1.png,assets/lyft-2.png,assets/lyft-3.png,assets/lyft-4.png,assets/lyft-5.png,assets/lyft-6.png">
+          <div class="work-top"><span class="work-company">Lyft</span><span class="work-year">2018</span></div>
           <span class="work-role">Sr Design Director</span>
-          <span class="work-year">2018</span>
         </li>
         <li class="work-item"
             data-company="Andreessen Horowitz"
@@ -606,34 +771,34 @@
             data-year="2016"
             data-desc="Tier 1 venture capital firm, Menlo Park"
             data-href="https://a16z.com">
-          <span class="work-company">Andreessen Horowitz</span>
+          <div class="work-top"><span class="work-company">Andreessen Horowitz</span><span class="work-year">2016</span></div>
           <span class="work-role">Design Advisor</span>
-          <span class="work-year">2016</span>
         </li>
         <li class="work-item"
             data-company="Honor"
             data-role="Head of Design"
             data-year="2014"
             data-desc="Home care platform connecting families with caregivers"
-            data-href="https://www.honorcare.com">
-          <span class="work-company">Honor</span>
+            data-href="https://www.honorcare.com"
+            data-preview-sequence="assets/honor-1.png,assets/honor-2.png,assets/honor-3.png,assets/honor-4.png,assets/honor-5.png">
+          <div class="work-top"><span class="work-company">Honor</span><span class="work-year">2014</span></div>
           <span class="work-role">Head of Design</span>
-          <span class="work-year">2014</span>
         </li>
         <li class="work-item"
             data-company="Human"
             data-role="Co-founder"
             data-year="2012"
             data-desc="Activity tracking app for iOS"
-            data-href="https://techcrunch.com/2013/09/03/meet-human-a-beautiful-fitness-tracking-app-to-effortlessly-stay-healthy/">
-          <span class="work-company">Human</span>
+            data-href="https://techcrunch.com/2013/09/03/meet-human-a-beautiful-fitness-tracking-app-to-effortlessly-stay-healthy/"
+            data-preview-image="assets/human.png"
+            data-preview-fit="contain">
+          <div class="work-top"><span class="work-company">Human</span><span class="work-year">2012</span></div>
           <span class="work-role">Co-founder</span>
-          <span class="work-year">2012</span>
         </li>
       </ul>
     </section>
 
-    <p class="page-end">© 2026 Renato Valdés Olmos</p>
+    <p class="page-end">© 2026 Renato Valdés-Olmos</p>
 
   </main>
 
@@ -667,47 +832,219 @@
         if (!storagGet()) applyTheme(e.matches ? 'dark' : 'light');
       });
 
-      var preview    = document.getElementById('itemPreview');
-      var previewImg = document.getElementById('itemPreviewImg');
-      var hideTimer;
+      var preview      = document.getElementById('itemPreview');
+      var previewMedia = document.getElementById('itemPreviewMedia');
+      var hideTimer, seqTimer, seqIndex, seqItems;
+
+      function buildMedia(sources, fit, zoomIndices) {
+        previewMedia.innerHTML = '';
+        sources.forEach(function (src, i) {
+          var el;
+          if (src.match(/\.(mp4|webm|mov)$/i)) {
+            el = document.createElement('video');
+            el.src = src;
+            el.autoplay = true;
+            el.loop = false;
+            el.muted = true;
+            el.playsInline = true;
+          } else {
+            el = document.createElement('img');
+            el.src = src;
+            el.alt = '';
+          }
+          if (fit === 'contain') el.classList.add('contain');
+          if (zoomIndices && zoomIndices.indexOf(i) !== -1) el.classList.add('zoom');
+          if (i === 0) el.classList.add('active');
+          previewMedia.appendChild(el);
+        });
+      }
+
+      function scheduleNext(el) {
+        if (el.tagName === 'VIDEO') {
+          el.onended = advanceSeq;
+        } else {
+          seqTimer = setTimeout(advanceSeq, 2500);
+        }
+      }
+
+      function advanceSeq() {
+        if (!seqItems || seqItems.length <= 1) return;
+        var children = previewMedia.children;
+        var prev = children[seqIndex];
+        if (prev.tagName === 'VIDEO') prev.onended = null;
+        prev.classList.remove('active');
+        seqIndex = (seqIndex + 1) % seqItems.length;
+        var next = children[seqIndex];
+        next.classList.add('active');
+        /* Play video if active, pause others */
+        for (var i = 0; i < children.length; i++) {
+          if (children[i].tagName === 'VIDEO') {
+            if (i === seqIndex) { children[i].currentTime = 0; children[i].play(); }
+            else children[i].pause();
+          }
+        }
+        scheduleNext(next);
+      }
+
+      function positionPreview() {
+        var vw = window.innerWidth;
+        var GRID_ORIGIN = 24;
+        var GRID_MODULE = 204;
+        var W3 = 592;
+        var W2 = 388;
+
+        /* Horizontal: snap to grid */
+        var previewCol = vw >= 1024 ? 3 : 2;
+        var leftPos = GRID_ORIGIN + previewCol * GRID_MODULE;
+
+        if (leftPos + W3 + 16 <= vw) {
+          preview.style.width = W3 + 'px';
+          preview.style.left  = leftPos + 'px';
+          preview.style.right = 'auto';
+        } else if (leftPos + W2 + 16 <= vw) {
+          preview.style.width = W2 + 'px';
+          preview.style.left  = leftPos + 'px';
+          preview.style.right = 'auto';
+        } else {
+          preview.style.width = W2 + 'px';
+          preview.style.right = '24px';
+          preview.style.left  = 'auto';
+        }
+      }
 
       document.querySelectorAll('.work-item').forEach(function (item) {
         item.addEventListener('click', function () {
           if (item.dataset.href) window.open(item.dataset.href, '_blank', 'noopener');
         });
 
-        if (!item.dataset.previewImage) return;
+        var sources = item.dataset.previewSequence
+          ? item.dataset.previewSequence.split(',')
+          : item.dataset.previewImage
+            ? [item.dataset.previewImage]
+            : null;
+
+        if (!sources) return;
 
         item.addEventListener('mouseenter', function () {
           clearTimeout(hideTimer);
-          previewImg.src = item.dataset.previewImage;
+          clearTimeout(seqTimer);
 
-          var rect = item.getBoundingClientRect();
-          var vw   = window.innerWidth;
-          var PREVIEW_W = 320;
+          seqIndex = 0;
+          seqItems = sources;
+          var zoomIndices = item.dataset.previewZoom
+            ? item.dataset.previewZoom.split(',').map(Number)
+            : null;
+          buildMedia(sources, item.dataset.previewFit, zoomIndices);
 
-          var top = Math.max(16, rect.top + rect.height / 2 - 80);
-          preview.style.top = top + 'px';
-
-          var contentRight = vw >= 1440 ? 204 + 844 : vw >= 1024 ? 204 + 640 : vw / 2 + 320;
-          var leftPos = contentRight + 36;
-
-          if (leftPos + PREVIEW_W + 16 <= vw) {
-            preview.style.left  = leftPos + 'px';
-            preview.style.right = 'auto';
-          } else {
-            preview.style.right = '24px';
-            preview.style.left  = 'auto';
-          }
+          positionPreview();
 
           preview.setAttribute('aria-hidden', 'false');
           preview.classList.add('visible');
+
+          /* Re-center after first image loads */
+          var first = previewMedia.children[0];
+          if (first.tagName === 'IMG') {
+            first.onload = function () { positionPreview(); };
+          } else {
+            first.onloadeddata = function () { positionPreview(); };
+          }
+
+          if (sources.length > 1) {
+            scheduleNext(first);
+          }
         });
 
         item.addEventListener('mouseleave', function () {
+          clearTimeout(seqTimer);
           hideTimer = setTimeout(function () {
             preview.classList.remove('visible');
             preview.setAttribute('aria-hidden', 'true');
+            /* Stop videos */
+            var videos = previewMedia.querySelectorAll('video');
+            videos.forEach(function (v) { v.pause(); });
+          }, 60);
+        });
+      });
+    })();
+
+    /* ── Slot machine ── */
+    (function () {
+      var words = ['design', 'brand', 'product', 'engineering', 'marketing'];
+      var wrapper = document.getElementById('slot');
+      var current = 0;
+
+      var span = document.createElement('span');
+      span.className = 'slot-word in';
+      span.textContent = words[0];
+      wrapper.appendChild(span);
+
+      setInterval(function () {
+        var old = wrapper.querySelector('.slot-word.in');
+        old.className = 'slot-word out';
+
+        current = (current + 1) % words.length;
+        var next = document.createElement('span');
+        next.className = 'slot-word in';
+        next.textContent = words[current];
+        next.style.opacity = '0';
+        next.style.transform = 'translateY(0.3em)';
+        wrapper.appendChild(next);
+
+        requestAnimationFrame(function () {
+          next.style.opacity = '';
+          next.style.transform = '';
+        });
+
+        setTimeout(function () {
+          if (old.parentNode) old.parentNode.removeChild(old);
+        }, 300);
+      }, 2000);
+    })();
+
+    /* ── Bio hover previews ── */
+    (function () {
+      var el = document.createElement('div');
+      el.className = 'bio-hover-preview';
+      el.innerHTML = '<img src="" alt="">';
+      document.body.appendChild(el);
+      var img = el.querySelector('img');
+      var hideTimer;
+
+      function positionBioPreview() {
+        var vw = window.innerWidth;
+        var GRID_ORIGIN = 24;
+        var GRID_MODULE = 204;
+        var W3 = 592;
+        var W2 = 388;
+        var previewCol = vw >= 1024 ? 3 : 2;
+        var leftPos = GRID_ORIGIN + previewCol * GRID_MODULE;
+
+        if (leftPos + W3 + 16 <= vw) {
+          el.style.width = W3 + 'px';
+          el.style.left  = leftPos + 'px';
+          el.style.right = 'auto';
+        } else if (leftPos + W2 + 16 <= vw) {
+          el.style.width = W2 + 'px';
+          el.style.left  = leftPos + 'px';
+          el.style.right = 'auto';
+        } else {
+          el.style.width = W2 + 'px';
+          el.style.right = '24px';
+          el.style.left  = 'auto';
+        }
+      }
+
+      document.querySelectorAll('.bio-hover').forEach(function (span) {
+        span.addEventListener('mouseenter', function (e) {
+          clearTimeout(hideTimer);
+          img.src = span.dataset.bioImage;
+          positionBioPreview();
+          el.classList.add('visible');
+        });
+
+        span.addEventListener('mouseleave', function () {
+          hideTimer = setTimeout(function () {
+            el.classList.remove('visible');
           }, 60);
         });
       });
