@@ -100,17 +100,6 @@
       overflow: hidden;
       border-radius: 4px;
       outline: none;
-      padding-bottom: 8px;
-    }
-
-    .theme-toggle::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 184px;
-      height: 1px;
-      background: var(--grid-line);
     }
 
     .theme-toggle:hover {
@@ -190,7 +179,6 @@
       padding-top: 88px;
       padding-bottom: 96px;
       align-content: start;
-      border-bottom: 1px solid var(--grid-line);
     }
 
     .entrance-name {
@@ -202,8 +190,6 @@
       line-height: 1.2;
       color: var(--text);
       margin-bottom: -2px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--grid-line);
     }
 
     .entrance-role {
@@ -224,8 +210,6 @@
       font-weight: 500;
       letter-spacing: -0.01em;
       margin-bottom: 40px;
-      padding-bottom: 40px;
-      border-bottom: 1px solid var(--grid-line);
     }
 
     .entrance-bio p + p {
@@ -521,18 +505,6 @@
       opacity: 0.45;
       padding-top: 48px;
       padding-bottom: 72px;
-      position: relative;
-    }
-
-    .page-end::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      height: 1px;
-      background: var(--grid-line);
     }
 
     /* ── Focus states ── */
@@ -617,13 +589,12 @@
       }
 
       .theme-toggle {
-        left: 16px;
+        left: auto;
+        right: 18px;
         top: 20px;
       }
 
-      .theme-toggle::after {
-        width: calc(50vw - 18px);
-      }
+
 
       .entrance {
         padding-top: 64px;
@@ -719,7 +690,7 @@
       <h1 class="entrance-name"><span class="bio-hover" data-bio-image="assets/renn.png">Renato Valdés-Olmos</span></h1>
       <p class="entrance-role">Designer, builder, investor</p>
       <div class="entrance-bio">
-        <p>I lead <span class="slot-wrapper" id="slot"></span> at companies that are trying to<br>do something that matters. I've done it at <span class="bio-hover bio-link" data-bio-image="assets/lyft-team.jpg">Lyft</span>, <span class="bio-hover bio-link" data-bio-image="assets/grammarly-team.jpg">Grammarly</span>, and <span class="bio-hover bio-link" data-bio-image="assets/honor-team.jpg">Honor</span>; from founding stages through scale.</p>
+        <p>I lead <span class="slot-wrapper" id="slot"></span> at companies that are trying to <br>do something that matters. I've done it at <span class="bio-hover bio-link" data-bio-image="assets/lyft-team.jpg">Lyft</span>, <span class="bio-hover bio-link" data-bio-image="assets/grammarly-team.jpg">Grammarly</span>, and <span class="bio-hover bio-link" data-bio-image="assets/honor-team.jpg">Honor</span>; from founding stages through scale.</p>
         <p>Right now I'm raising two boys and helping to build <a href="https://growthx.ai" class="bio-link" target="_blank" rel="noopener">GrowthX</a> and <a href="https://noord.vc" class="bio-link" target="_blank" rel="noopener">Noord</a>.</p>
       </div>
       <a href="mailto:contact@renatovaldes.com" class="email-link">contact@renatovaldes.com</a>
