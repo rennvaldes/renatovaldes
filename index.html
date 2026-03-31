@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Renato Valdés-Olmos</title>
   <meta name="description" content="Designer, builder, investor. Co-founder at GrowthX and Noord. Previously Lyft, Grammarly, Pitch, Honor." />
+  <meta name="theme-color" content="#FAF9F6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0E0C0A" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="https://use.typekit.net/pyc5dov.css">
   <style>
     @font-face {
@@ -614,9 +616,22 @@
         column-gap: 16px;
       }
 
+      .theme-toggle {
+        left: 16px;
+        top: 20px;
+      }
+
+      .theme-toggle::after {
+        width: calc(50vw - 18px);
+      }
+
       .entrance {
-        padding-top: 72px;
-        padding-bottom: 72px;
+        padding-top: 64px;
+        padding-bottom: 56px;
+      }
+
+      .entrance-name {
+        font-size: 30px;
       }
 
       .entrance-name,
@@ -629,6 +644,12 @@
 
       .entrance-bio {
         font-size: 16px;
+        margin-bottom: 32px;
+        padding-bottom: 32px;
+      }
+
+      .entrance-bio br {
+        display: none;
       }
 
       .section-label {
@@ -636,7 +657,13 @@
       }
 
       .work {
-        padding-top: 64px;
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr;
+        padding-top: 48px;
+      }
+
+      .work-list {
+        max-width: 100%;
       }
 
       .work-item {
@@ -648,8 +675,10 @@
         font-size: 13px;
       }
 
-      .work-preview {
-        display: none;
+      /* Hide hover previews on touch */
+      .item-preview,
+      .bio-hover-preview {
+        display: none !important;
       }
 
       .page-end {
