@@ -3,19 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Renn Valdés Olmos</title>
-  <meta name="description" content="Design executive, writer, and founder. Co-founder at GrowthX. Previously Lyft, Grammarly, Pitch, Honor." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600&display=swap" rel="stylesheet" />
+  <title>Renato Valdés Olmos</title>
+  <meta name="description" content="Designer, builder, investor. Co-founder at GrowthX and Noord. Previously Lyft, Grammarly, Pitch, Honor." />
+  <link rel="stylesheet" href="https://use.typekit.net/pyc5dov.css">
+  <style>
+    @font-face {
+      font-family: 'Messina Sans';
+      src: url('fonts/MessinaSans-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Messina Sans';
+      src: url('fonts/MessinaSans-Variable-Italic.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
   <style>
     :root {
       --bg: #FAF9F6;
       --text: #1a1a1a;
       --text-secondary: #6b6b6b;
       --accent: #c17f59;
-      --divider: rgba(0,0,0,0.08);
+      --divider: rgba(0,0,0,0.05);
+      --grid-line: rgba(0,0,0,0.018);
+      --gutter: 20px;
       --transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+      /* Grid: 204px module (184px col + 20px gutter), anchored 24px from left */
+      --grid-image: linear-gradient(
+        to right,
+        var(--grid-line) 0, var(--grid-line) 1px,
+        transparent 1px, transparent 184px,
+        var(--grid-line) 184px, var(--grid-line) 185px,
+        transparent 185px, transparent 204px
+      );
+      --grid-size: 204px;
+      --grid-pos: 24px 0;
     }
 
     [data-theme="dark"] {
@@ -23,7 +50,8 @@
       --text: #e8e4df;
       --text-secondary: #9a9490;
       --accent: #c17f59;
-      --divider: rgba(255,255,255,0.07);
+      --divider: rgba(255,255,255,0.06);
+      --grid-line: rgba(255,255,255,0.022);
     }
 
     *, *::before, *::after {
@@ -39,69 +67,27 @@
 
     body {
       background-color: var(--bg);
+      background-image: var(--grid-image);
+      background-size: var(--grid-size) 100vh;
+      background-repeat: repeat-x;
+      background-attachment: fixed;
+      background-position: var(--grid-pos);
       color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-weight: 400;
+      font-family: 'Messina Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 500;
       line-height: 1.65;
       transition: var(--transition);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ── Header ── */
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background-color: var(--bg);
-      transition: var(--transition);
-      border-bottom: 1px solid var(--divider);
-    }
-
-    .header-inner {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .header-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: -0.01em;
-      transition: color 0.2s ease;
-    }
-
-    .header-name:hover {
-      color: var(--accent);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .header-contact {
-      font-size: 13px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .header-contact:hover {
-      color: var(--accent);
-    }
+    /* ── Theme toggle (standalone, fixed top-right) ── */
 
     .theme-toggle {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 100;
       background: none;
       border: none;
       cursor: pointer;
@@ -130,54 +116,65 @@
       display: block;
     }
 
-    [data-theme="dark"] .icon-sun { display: block; }
-    [data-theme="dark"] .icon-moon { display: none; }
-    .icon-sun { display: none; }
+    [data-theme="dark"] .icon-sun  { display: block; }
+    [data-theme="dark"] .icon-moon { display: none;  }
+    .icon-sun  { display: none;  }
     .icon-moon { display: block; }
-
-    /* In light mode (no [data-theme] or [data-theme="light"]) show moon, hide sun */
-    [data-theme="light"] .icon-sun { display: none; }
+    [data-theme="light"] .icon-sun  { display: none;  }
     [data-theme="light"] .icon-moon { display: block; }
+
 
     /* ── Main ── */
 
     main {
+      position: relative;
+      z-index: 1;
       max-width: 640px;
       margin: 0 auto;
       padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: var(--gutter);
     }
 
-    /* ── Section 1: Entrance ── */
+    /* ── Entrance ── */
 
     .entrance {
-      padding-top: 136px;
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
+      padding-top: 88px;
       padding-bottom: 96px;
+      align-content: start;
     }
 
     .entrance-name {
+      grid-column: 1 / -1;
+      font-family: 'adhesive-nr-eight', serif;
       font-size: clamp(28px, 5vw, 38px);
-      font-weight: 500;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.2;
       color: var(--text);
-      margin-bottom: 20px;
+      margin-bottom: 6px;
     }
 
     .entrance-role {
+      grid-column: 1 / span 2;
       font-size: 15px;
       color: var(--text-secondary);
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: -0.01em;
       margin-bottom: 32px;
     }
 
     .entrance-bio {
+      grid-column: 1 / span 2;
       font-size: 17px;
       line-height: 1.7;
       color: var(--text);
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: -0.01em;
-      max-width: 560px;
       margin-bottom: 40px;
     }
 
@@ -185,7 +182,24 @@
       margin-top: 16px;
     }
 
+    .email-link {
+      grid-column: 1 / span 2;
+      font-size: 15px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s ease;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .email-link:hover {
+      opacity: 0.75;
+    }
+
     .social-links {
+      grid-column: 1 / -1;
       display: flex;
       align-items: center;
       gap: 20px;
@@ -196,203 +210,124 @@
       font-size: 13px;
       color: var(--text-secondary);
       text-decoration: none;
-      letter-spacing: 0;
       transition: color 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
 
     .social-link:hover {
       color: var(--accent);
     }
 
-    .email-link {
-      font-size: 15px;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 450;
-      letter-spacing: -0.01em;
-      transition: opacity 0.2s ease;
-      margin-bottom: 20px;
-      display: inline-block;
+    /* ── Item image preview ── */
+
+    .item-preview {
+      position: fixed;
+      width: 320px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 50;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      transform: translateY(6px);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
     }
 
-    .email-link:hover {
-      opacity: 0.75;
+    .item-preview.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* ── Divider ── */
-
-    .section-divider {
-      border: none;
-      border-top: 1px solid var(--divider);
-      margin: 0;
+    .item-preview-img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
-    /* ── Section 2: Writing ── */
+    /* ── Work ── */
 
-    .writing {
+    .work {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
       padding-top: 80px;
-      padding-bottom: 96px;
+      padding-bottom: 0;
+      align-content: start;
     }
 
     .section-label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      color: var(--text-secondary);
-      text-transform: none;
-      margin-bottom: 40px;
-    }
-
-    /* Override — using small-caps style instead of uppercase */
-    .section-label-text {
-      font-variant: small-caps;
+      grid-column: 1;
       font-size: 13px;
-      letter-spacing: 0.04em;
-    }
-
-    .writing-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .writing-item {
-      padding: 20px 0;
-      border-bottom: 1px solid var(--divider);
-      transition: opacity 0.2s ease;
-    }
-
-    .writing-item:first-child {
-      border-top: 1px solid var(--divider);
-    }
-
-    .writing-item a {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .writing-item a:hover .writing-title {
-      color: var(--accent);
-    }
-
-    .writing-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-      transition: color 0.2s ease;
-    }
-
-    .writing-desc {
-      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       color: var(--text-secondary);
-      letter-spacing: -0.005em;
-      line-height: 1.5;
-    }
-
-    .subscribe-note {
-      margin-top: 40px;
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      letter-spacing: -0.005em;
-    }
-
-    .subscribe-note a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .subscribe-note a:hover {
-      opacity: 0.75;
-    }
-
-    /* ── Section 3: Work ── */
-
-    .work {
-      padding-top: 80px;
-      padding-bottom: 96px;
+      margin-bottom: 20px;
     }
 
     .work-list {
+      grid-column: 1 / -1;
       list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
     }
 
     .work-item {
-      padding: 24px 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0 var(--gutter);
+      align-items: baseline;
+      padding: 14px 21px;
+      margin: 0 -21px;
+      cursor: pointer;
+      position: relative;
       border-bottom: 1px solid var(--divider);
-      transition: opacity 0.15s ease;
+      transition: background-color 0.15s ease;
     }
 
     .work-item:first-child {
       border-top: 1px solid var(--divider);
     }
 
-    .work-header {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
+    .work-item:hover {
+      background-color: rgba(193, 127, 89, 0.04);
     }
 
     .work-company {
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text);
       letter-spacing: -0.02em;
+      transition: color 0.15s ease;
     }
 
-    .work-separator {
-      color: var(--divider);
-      font-weight: 300;
+    .work-item:hover .work-company {
+      color: var(--accent);
     }
 
     .work-role {
       font-size: 14px;
       color: var(--text-secondary);
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: -0.005em;
+      line-height: 1.45;
     }
 
-    .work-desc {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.55;
-      letter-spacing: -0.005em;
-      max-width: 520px;
-    }
-
-    /* ── Footer ── */
-
-    footer {
-      border-top: 1px solid var(--divider);
-      transition: var(--transition);
-    }
-
-    .footer-inner {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 32px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .footer-copy {
+    .work-year {
       font-size: 13px;
       color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      text-align: right;
+      opacity: 0.7;
+    }
+
+    /* ── Page end (integrated copyright) ── */
+
+    .page-end {
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: var(--text-secondary);
       letter-spacing: -0.005em;
+      opacity: 0.45;
+      padding-top: 48px;
+      padding-bottom: 72px;
     }
 
     /* ── Focus states ── */
@@ -403,220 +338,378 @@
       border-radius: 2px;
     }
 
-    /* ── Mobile ── */
+    /* ── Left-aligned layout: col 2 anchor ── */
 
-    @media (max-width: 480px) {
-      .header-inner {
-        padding: 0 18px;
+    @media (min-width: 1024px) {
+      main,
+      .footer-inner {
+        margin-left: 204px;
+        margin-right: 0;
+      }
+    }
+
+    /* ── Wide: 4 columns ── */
+
+    @media (min-width: 1440px) {
+      main {
+        max-width: 844px; /* 4 cols: 4×184 + 3×20 + 2×24 */
+        margin-left: 204px;
+        margin-right: 0;
       }
 
       main {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .entrance-bio,
+      .entrance-role {
+        grid-column: 1 / span 3;
+      }
+
+      .work-item {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .work-role {
+        grid-column: 2 / 4;
+      }
+
+      .work-year {
+        grid-column: 4;
+      }
+    }
+
+    /* ── Massive: 5 columns ── */
+
+    @media (min-width: 2560px) {
+      main {
+        max-width: 1048px; /* 5 cols: 5×184 + 4×20 + 2×24 */
+        margin-left: 204px;
+        margin-right: 0;
+      }
+
+      main {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .entrance-bio,
+      .entrance-role {
+        grid-column: 1 / span 3;
+      }
+
+      .work-item {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .work-role {
+        grid-column: 2 / 5;
+      }
+
+      .work-year {
+        grid-column: 5;
+      }
+    }
+
+    /* ── Mobile ── */
+
+    @media (max-width: 480px) {
+      /* 2-col mobile grid */
+      :root {
+        --grid-image: linear-gradient(
+          to right,
+          var(--grid-line) 0, var(--grid-line) 1px,
+          transparent 1px, transparent calc(50vw - 26px),
+          var(--grid-line) calc(50vw - 26px), var(--grid-line) calc(50vw - 25px),
+          transparent calc(50vw - 25px), transparent calc(50vw - 10px)
+        );
+        --grid-size: calc(50vw - 10px);
+        --grid-pos: 18px 0;
+      }
+
+      main {
+        margin-left: 0;
         padding: 0 18px;
+        max-width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 16px;
       }
 
       .entrance {
-        padding-top: 112px;
+        padding-top: 72px;
         padding-bottom: 72px;
+      }
+
+      .entrance-name,
+      .entrance-role,
+      .entrance-bio,
+      .email-link,
+      .social-links {
+        grid-column: 1 / -1;
       }
 
       .entrance-bio {
         font-size: 16px;
       }
 
-      .writing {
-        padding-top: 64px;
-        padding-bottom: 72px;
+      .section-label {
+        grid-column: 1 / -1;
       }
 
       .work {
         padding-top: 64px;
-        padding-bottom: 72px;
       }
 
-      .footer-inner {
-        padding: 28px 18px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+      .work-item {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto auto;
+        gap: 3px var(--gutter);
+        margin: 0 -18px;
+        padding: 13px 18px;
+      }
+
+      .work-company {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .work-role {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        font-size: 13px;
+      }
+
+      .work-year {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .work-preview {
+        display: none;
+      }
+
+      .page-end {
+        padding-top: 40px;
+        padding-bottom: 56px;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
-      <a href="#" class="header-name">Renn Valdés Olmos</a>
-      <div class="header-right">
-        <a href="mailto:renato@growthx.ai" class="header-contact">Contact</a>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-          <!-- Moon (show in light mode) -->
-          <svg class="icon-moon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.5 9.5a6 6 0 0 1-7-7 5.5 5.5 0 1 0 7 7Z" fill="currentColor"/>
-          </svg>
-          <!-- Sun (show in dark mode) -->
-          <svg class="icon-sun" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="8" cy="8" r="3" fill="currentColor"/>
-            <line x1="8" y1="1" x2="8" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="8" y1="13" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="1" y1="8" x2="3" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="13" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="2.929" y1="2.929" x2="4.343" y2="4.343" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="11.657" y1="11.657" x2="13.071" y2="13.071" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="2.929" y1="13.071" x2="4.343" y2="11.657" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="11.657" y1="4.343" x2="13.071" y2="2.929" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <svg class="icon-moon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13.5 9.5a6 6 0 0 1-7-7 5.5 5.5 0 1 0 7 7Z" fill="currentColor"/>
+    </svg>
+    <svg class="icon-sun" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="3" fill="currentColor"/>
+      <line x1="8" y1="1" x2="8" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="8" y1="13" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="1" y1="8" x2="3" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="13" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="2.929" y1="2.929" x2="4.343" y2="4.343" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="11.657" y1="11.657" x2="13.071" y2="13.071" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="2.929" y1="13.071" x2="4.343" y2="11.657" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="11.657" y1="4.343" x2="13.071" y2="2.929" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="item-preview" id="itemPreview" aria-hidden="true">
+    <img class="item-preview-img" id="itemPreviewImg" src="" alt="" />
+  </div>
 
   <main>
 
-    <!-- Section 1: Entrance -->
     <section class="entrance">
-      <h1 class="entrance-name">Renn Valdés Olmos</h1>
-      <p class="entrance-role">Design executive, writer, and founder</p>
+      <h1 class="entrance-name">Renato Valdés Olmos</h1>
+      <p class="entrance-role">Designer, builder, investor</p>
       <div class="entrance-bio">
-        <p>I lead design, brand, and product teams at companies that are trying to do something that matters. I've done it at Lyft, Grammarly, Honor, and Pitch — from founding stages through scale.</p>
-        <p>Right now I'm building GrowthX and writing about the collision between AI and taste.</p>
+        <p>I lead design, brand, and product teams at companies that are trying to do something that matters. I've done it at Lyft, Grammarly, Honor, and Pitch; from founding stages through scale.</p>
+        <p>Right now I'm raising two boys and helping to build GrowthX and Noord.</p>
       </div>
-      <a href="mailto:renato@growthx.ai" class="email-link">renato@growthx.ai</a>
+      <a href="mailto:contact@renatovaldes.com" class="email-link">contact@renatovaldes.com</a>
       <div class="social-links">
-        <a href="https://linkedin.com/in/rennvaldes" class="social-link" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://threads.net/@rennvaldes" class="social-link" target="_blank" rel="noopener">Threads</a>
-        <a href="https://bsky.app/profile/rennvaldes.bsky.social" class="social-link" target="_blank" rel="noopener">Bluesky</a>
-        <a href="https://twitter.com/rennvaldes" class="social-link" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://linkedin.com/in/renatovaldes" class="social-link" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://threads.net/@renn" class="social-link" target="_blank" rel="noopener">Threads</a>
+        <a href="https://bsky.app/profile/renn.bsky.social" class="social-link" target="_blank" rel="noopener">Bluesky</a>
+        <a href="https://twitter.com/renn" class="social-link" target="_blank" rel="noopener">Twitter</a>
       </div>
     </section>
 
-    <hr class="section-divider" />
-
-    <!-- Section 2: Writing -->
-    <section class="writing">
-      <p class="section-label"><span class="section-label-text">Writing</span></p>
-      <ul class="writing-list">
-        <li class="writing-item">
-          <a href="#" aria-label="The Taste Gap">
-            <div class="writing-title">The Taste Gap</div>
-            <div class="writing-desc">On why AI makes human judgment more valuable, not less</div>
-          </a>
-        </li>
-        <li class="writing-item">
-          <a href="#" aria-label="Designing at the Speed of Trust">
-            <div class="writing-title">Designing at the Speed of Trust</div>
-            <div class="writing-desc">What I learned building design teams from 3 to 40</div>
-          </a>
-        </li>
-        <li class="writing-item">
-          <a href="#" aria-label="Zero to One Hundred">
-            <div class="writing-title">Zero to One Hundred</div>
-            <div class="writing-desc">The difference between founding and scaling, from someone who's done both</div>
-          </a>
-        </li>
-        <li class="writing-item">
-          <a href="#" aria-label="Broken Screens">
-            <div class="writing-title">Broken Screens</div>
-            <div class="writing-desc">Why I started a newsletter about the things I can't stop thinking about</div>
-          </a>
-        </li>
-        <li class="writing-item">
-          <a href="#" aria-label="The Brand is the Product">
-            <div class="writing-title">The Brand is the Product</div>
-            <div class="writing-desc">A case for why brand strategy belongs in the product org</div>
-          </a>
-        </li>
-      </ul>
-      <p class="subscribe-note">
-        I write <a href="#" target="_blank" rel="noopener">Broken Screens</a>, a newsletter about design, AI, and the things I can't stop thinking about.
-      </p>
-    </section>
-
-    <hr class="section-divider" />
-
-    <!-- Section 3: Work -->
     <section class="work">
-      <p class="section-label"><span class="section-label-text">Work</span></p>
+      <p class="section-label">Work</p>
       <ul class="work-list">
-        <li class="work-item">
-          <div class="work-header">
-            <span class="work-company">GrowthX</span>
-            <span class="work-separator">·</span>
-            <span class="work-role">Co-founder, Head of Design</span>
-          </div>
-          <p class="work-desc">Design studio and venture partner building brands and products for early-stage companies.</p>
+        <li class="work-item"
+            data-company="GrowthX"
+            data-role="Founding Designer, Head of Design"
+            data-year="2025"
+            data-desc="Education platform for growth leaders and operators"
+            data-href="https://growthx.ai"
+            data-preview-image="assets/growthx.png">
+          <span class="work-company">GrowthX</span>
+          <span class="work-role">Founding Designer, Head of Design</span>
+          <span class="work-year">2025</span>
         </li>
-        <li class="work-item">
-          <div class="work-header">
-            <span class="work-company">Grammarly</span>
-            <span class="work-separator">·</span>
-            <span class="work-role">VP Design</span>
-          </div>
-          <p class="work-desc">Led the design org through the AI pivot — from editing tool to writing partner.</p>
+        <li class="work-item"
+            data-company="Noord"
+            data-role="Co-founder &amp; Investor"
+            data-year="2024"
+            data-desc="Early-stage venture studio and investment firm"
+            data-href="https://noord.vc">
+          <span class="work-company">Noord</span>
+          <span class="work-role">Co-founder &amp; Investor</span>
+          <span class="work-year">2024</span>
         </li>
-        <li class="work-item">
-          <div class="work-header">
-            <span class="work-company">Lyft</span>
-            <span class="work-separator">·</span>
-            <span class="work-role">Design Director</span>
-          </div>
-          <p class="work-desc">Built the design team from 3 to 40. Owned rider, driver, and brand experience through the IPO push.</p>
+        <li class="work-item"
+            data-company="Peak"
+            data-role="Entrepreneur in Residence"
+            data-year="2023"
+            data-desc="AI platform for retail decision-making"
+            data-href="https://peak.capital">
+          <span class="work-company">Peak</span>
+          <span class="work-role">Entrepreneur in Residence</span>
+          <span class="work-year">2023</span>
         </li>
-        <li class="work-item">
-          <div class="work-header">
-            <span class="work-company">Pitch</span>
-            <span class="work-separator">·</span>
-            <span class="work-role">Head of Design</span>
-          </div>
-          <p class="work-desc">Built the design system and brand for the presentation tool taking on Google and Microsoft.</p>
+        <li class="work-item"
+            data-company="Pitch"
+            data-role="VP Product &amp; Design"
+            data-year="2022"
+            data-desc="Collaborative presentation software for modern teams"
+            data-href="https://pitch.com">
+          <span class="work-company">Pitch</span>
+          <span class="work-role">VP Product &amp; Design</span>
+          <span class="work-year">2022</span>
         </li>
-        <li class="work-item">
-          <div class="work-header">
-            <span class="work-company">Honor</span>
-            <span class="work-separator">·</span>
-            <span class="work-role">Design Lead</span>
-          </div>
-          <p class="work-desc">Shaped the product experience for the home care platform from zero to launch.</p>
+        <li class="work-item"
+            data-company="Grammarly"
+            data-role="Head of Design"
+            data-year="2020"
+            data-desc="AI writing assistant, 30M+ daily users"
+            data-href="https://superhuman.com/products/grammarly"
+            data-preview-image="assets/grammarly.png">
+          <span class="work-company">Grammarly</span>
+          <span class="work-role">Head of Design</span>
+          <span class="work-year">2020</span>
+        </li>
+        <li class="work-item"
+            data-company="Lyft"
+            data-role="Sr Design Director"
+            data-year="2018"
+            data-desc="On-demand transportation platform"
+            data-href="https://www.lyft.com">
+          <span class="work-company">Lyft</span>
+          <span class="work-role">Sr Design Director</span>
+          <span class="work-year">2018</span>
+        </li>
+        <li class="work-item"
+            data-company="Andreessen Horowitz"
+            data-role="Design Advisor"
+            data-year="2016"
+            data-desc="Tier 1 venture capital firm, Menlo Park"
+            data-href="https://a16z.com">
+          <span class="work-company">Andreessen Horowitz</span>
+          <span class="work-role">Design Advisor</span>
+          <span class="work-year">2016</span>
+        </li>
+        <li class="work-item"
+            data-company="Honor"
+            data-role="Head of Design"
+            data-year="2014"
+            data-desc="Home care platform connecting families with caregivers"
+            data-href="https://www.honorcare.com">
+          <span class="work-company">Honor</span>
+          <span class="work-role">Head of Design</span>
+          <span class="work-year">2014</span>
+        </li>
+        <li class="work-item"
+            data-company="Human"
+            data-role="Co-founder"
+            data-year="2012"
+            data-desc="Activity tracking app for iOS"
+            data-href="https://techcrunch.com/2013/09/03/meet-human-a-beautiful-fitness-tracking-app-to-effortlessly-stay-healthy/">
+          <span class="work-company">Human</span>
+          <span class="work-role">Co-founder</span>
+          <span class="work-year">2012</span>
         </li>
       </ul>
     </section>
+
+    <p class="page-end">© 2026 Renato Valdés Olmos</p>
 
   </main>
 
-  <footer>
-    <div class="footer-inner">
-      <span class="footer-copy">© 2026 Renn Valdés Olmos</span>
-    </div>
-  </footer>
-
   <script>
     (function () {
+      /* ── Theme ── */
       const toggle = document.getElementById('themeToggle');
       const root = document.documentElement;
 
       function getSystemTheme() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
-
+      function storagGet() {
+        try { return localStorage.getItem('theme'); } catch (e) { return null; }
+      }
+      function storagSet(v) {
+        try { localStorage.setItem('theme', v); } catch (e) {}
+      }
       function applyTheme(theme) {
         root.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
+        storagSet(theme);
       }
 
-      // Init: saved preference or system default
-      const saved = localStorage.getItem('theme');
-      applyTheme(saved || getSystemTheme());
+      applyTheme(storagGet() || getSystemTheme());
 
       toggle.addEventListener('click', function () {
-        const current = root.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+        applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
       });
 
-      // Respect system changes if no saved preference
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-        if (!localStorage.getItem('theme')) {
-          applyTheme(e.matches ? 'dark' : 'light');
-        }
+        if (!storagGet()) applyTheme(e.matches ? 'dark' : 'light');
+      });
+
+      var preview    = document.getElementById('itemPreview');
+      var previewImg = document.getElementById('itemPreviewImg');
+      var hideTimer;
+
+      document.querySelectorAll('.work-item').forEach(function (item) {
+        item.addEventListener('click', function () {
+          if (item.dataset.href) window.open(item.dataset.href, '_blank', 'noopener');
+        });
+
+        if (!item.dataset.previewImage) return;
+
+        item.addEventListener('mouseenter', function () {
+          clearTimeout(hideTimer);
+          previewImg.src = item.dataset.previewImage;
+
+          var rect = item.getBoundingClientRect();
+          var vw   = window.innerWidth;
+          var PREVIEW_W = 320;
+
+          var top = Math.max(16, rect.top + rect.height / 2 - 80);
+          preview.style.top = top + 'px';
+
+          var contentRight = vw >= 1440 ? 204 + 844 : vw >= 1024 ? 204 + 640 : vw / 2 + 320;
+          var leftPos = contentRight + 36;
+
+          if (leftPos + PREVIEW_W + 16 <= vw) {
+            preview.style.left  = leftPos + 'px';
+            preview.style.right = 'auto';
+          } else {
+            preview.style.right = '24px';
+            preview.style.left  = 'auto';
+          }
+
+          preview.setAttribute('aria-hidden', 'false');
+          preview.classList.add('visible');
+        });
+
+        item.addEventListener('mouseleave', function () {
+          hideTimer = setTimeout(function () {
+            preview.classList.remove('visible');
+            preview.setAttribute('aria-hidden', 'true');
+          }, 60);
+        });
       });
     })();
   </script>
