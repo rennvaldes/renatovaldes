@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Renato Valdés-Olmos</title>
   <meta name="description" content="Designer, builder, investor. Co-founder at GrowthX and Noord. Previously Lyft, Grammarly, Pitch, Honor." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#FAF9F6" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0E0C0A" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="https://use.typekit.net/pyc5dov.css">
@@ -1048,8 +1049,9 @@
       span.textContent = words[0];
       container.appendChild(span);
 
-      setInterval(function () {
+      function rotateWord() {
         var old = container.querySelector('.glass-word.active');
+        if (!old) return;
         old.className = 'glass-word out-up';
 
         current = (current + 1) % words.length;
@@ -1067,7 +1069,12 @@
         setTimeout(function () {
           if (old.parentNode) old.parentNode.removeChild(old);
         }, 450);
-      }, 2400);
+      }
+
+      setInterval(rotateWord, 2400);
+
+      /* Expose for pill click */
+      window._rotateGlassWord = rotateWord;
     })();
 
     /* ── Bio hover previews ── */
@@ -1331,6 +1338,8 @@
         deformAnim = requestAnimationFrame(tick);
       }
 
+      var didMove = false;
+
       pill.addEventListener('mousedown', grab);
       pill.addEventListener('touchstart', grab, { passive: false });
 
@@ -1339,6 +1348,7 @@
         if (springAnim) { cancelAnimationFrame(springAnim); springAnim = null; }
 
         dragging = true;
+        didMove = false;
         var pt = e.touches ? e.touches[0] : e;
         startMouseX = pt.clientX;
         startMouseY = pt.clientY;
@@ -1372,6 +1382,10 @@
         e.preventDefault();
         var pt = e.touches ? e.touches[0] : e;
 
+        var dx = pt.clientX - startMouseX;
+        var dy = pt.clientY - startMouseY;
+        if (!didMove && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) didMove = true;
+
         /* Track velocity */
         velX = pt.clientX - prevMx;
         velY = pt.clientY - prevMy;
@@ -1397,6 +1411,11 @@
         document.removeEventListener('mouseup', release);
         document.removeEventListener('touchend', release);
         pill.style.cursor = '';
+
+        /* Click (no drag) → rotate word */
+        if (!didMove && window._rotateGlassWord) {
+          window._rotateGlassWord();
+        }
 
         /* Release: target back to rest pill shape with strong wobble */
         heldDW = 0;

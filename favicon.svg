@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    rect { fill: #FAF9F6; }
+    text { fill: #1a1a1a; }
+    @media (prefers-color-scheme: dark) {
+      rect { fill: #0E0C0A; }
+      text { fill: #e8e4df; }
+    }
+  </style>
+  <rect width="32" height="32" rx="6"/>
+  <text x="16" y="22.5" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" text-anchor="middle" letter-spacing="-0.5">RVO</text>
+</svg>
