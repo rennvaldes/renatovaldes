@@ -1135,7 +1135,7 @@
       var homeLeft = 0, homeTop = 0;
       var dragging = false, springAnim = null;
       var startMouseX, startMouseY, startTx, startTy;
-      var STIFFNESS = 160, DAMPING = 12, MASS = 1;
+      var STIFFNESS = 220, DAMPING = 16, MASS = 1;
 
       function positionPill() {
         var r = wordsEl.getBoundingClientRect();
@@ -1242,12 +1242,17 @@
         requestAnimationFrame(buildLens);
       });
 
-      /* Deformation: animate width/height with spring physics */
+      /* Inertia-driven jelly deformation */
       var prevMx = 0, prevMy = 0, velX = 0, velY = 0;
+      var prevVelX = 0, prevVelY = 0; /* for acceleration */
       var baseW = 0, baseH = 0;
       var dw = 0, dh = 0, dwV = 0, dhV = 0;
       var heldDW = 0, heldDH = 0;
-      var JIGGLE_STIFF = 180, JIGGLE_DAMP = 6;
+
+      /* Jelly springs — wobbly but returns */
+      var JELLY_STIFF = 200;
+      var JELLY_DAMP = 5;
+      var INERTIA_FORCE = 6; /* how much acceleration deforms the blob */
       var deformAnim = null;
 
       function applyTransform() {
@@ -1269,18 +1274,47 @@
           var dt = Math.min((now - last) / 1000, 0.032);
           last = now;
 
+          /* Target = held shape (or rest) */
           var targetDW = dragging ? heldDW : 0;
           var targetDH = dragging ? heldDH : 0;
-          dwV += (-JIGGLE_STIFF * (dw - targetDW) - JIGGLE_DAMP * dwV) * dt;
+
+          /* Spring force toward target */
+          var forceW = -JELLY_STIFF * (dw - targetDW) - JELLY_DAMP * dwV;
+          var forceH = -JELLY_STIFF * (dh - targetDH) - JELLY_DAMP * dhV;
+
+          /* Inertia force: acceleration squashes/stretches the blob */
+          if (dragging) {
+            var accelX = velX - prevVelX;
+            var accelY = velY - prevVelY;
+
+            /* Horizontal accel stretches width, compresses height */
+            forceW += Math.abs(accelX) * INERTIA_FORCE * 18;
+            forceH -= Math.abs(accelX) * INERTIA_FORCE * 10;
+
+            /* Vertical accel stretches height, compresses width */
+            forceH += Math.abs(accelY) * INERTIA_FORCE * 18;
+            forceW -= Math.abs(accelY) * INERTIA_FORCE * 10;
+
+            /* Sustained velocity also deforms (drag stretching) */
+            forceW += Math.abs(velX) * INERTIA_FORCE * 0.8;
+            forceH += Math.abs(velY) * INERTIA_FORCE * 0.8;
+            forceW -= Math.abs(velY) * INERTIA_FORCE * 0.4;
+            forceH -= Math.abs(velX) * INERTIA_FORCE * 0.4;
+          }
+
+          prevVelX = velX;
+          prevVelY = velY;
+
+          dwV += forceW * dt;
           dw += dwV * dt;
-          dhV += (-JIGGLE_STIFF * (dh - targetDH) - JIGGLE_DAMP * dhV) * dt;
+          dhV += forceH * dt;
           dh += dhV * dt;
 
           applyTransform();
 
           var settled = !dragging &&
-            Math.abs(dw) < 0.2 && Math.abs(dh) < 0.2 &&
-            Math.abs(dwV) < 0.5 && Math.abs(dhV) < 0.5;
+            Math.abs(dw) < 0.15 && Math.abs(dh) < 0.15 &&
+            Math.abs(dwV) < 0.3 && Math.abs(dhV) < 0.3;
 
           if (settled && !springAnim) {
             dw = 0; dh = 0;
@@ -1344,13 +1378,7 @@
 
         /* Velocity-based squash/stretch */
         var speed = Math.sqrt(velX * velX + velY * velY);
-        /* Velocity-based size deformation */
-        var stretch = Math.min(speed * 0.6, 14);
-        var angle = Math.atan2(velY, velX);
-        var cosA = Math.abs(Math.cos(angle));
-        var sinA = Math.abs(Math.sin(angle));
-        dw = heldDW + stretch * cosA - stretch * 0.5 * sinA;
-        dh = heldDH + stretch * sinA - stretch * 0.5 * cosA;
+        /* Deformation is driven by inertia forces in the deform loop */
 
 
         applyTransform();
@@ -1365,11 +1393,11 @@
         document.removeEventListener('touchend', release);
         pill.style.cursor = '';
 
-        /* Release: target back to rest pill shape with wobble */
+        /* Release: target back to rest pill shape with strong wobble */
         heldDW = 0;
         heldDH = 0;
-        dwV = -velX * 3;
-        dhV = -velY * 3;
+        dwV += -velX * 8;
+        dhV += -velY * 8;
 
         /* Spring physics snap-back */
         var vx = 0, vy = 0;
@@ -1386,9 +1414,9 @@
           tx += vx * dt; ty += vy * dt;
 
           /* Size spring */
-          dwV += (-JIGGLE_STIFF * dw - JIGGLE_DAMP * dwV) * dt;
+          dwV += (-JELLY_STIFF * dw - JELLY_DAMP * dwV) * dt;
           dw += dwV * dt;
-          dhV += (-JIGGLE_STIFF * dh - JIGGLE_DAMP * dhV) * dt;
+          dhV += (-JELLY_STIFF * dh - JELLY_DAMP * dhV) * dt;
           dh += dhV * dt;
 
           applyTransform();
