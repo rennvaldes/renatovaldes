@@ -1288,18 +1288,23 @@
             var accelY = velY - prevVelY;
 
             /* Horizontal accel stretches width, compresses height */
-            forceW += Math.abs(accelX) * INERTIA_FORCE * 18;
-            forceH -= Math.abs(accelX) * INERTIA_FORCE * 10;
+            forceW += Math.abs(accelX) * INERTIA_FORCE * 45;
+            forceH -= Math.abs(accelX) * INERTIA_FORCE * 25;
 
             /* Vertical accel stretches height, compresses width */
-            forceH += Math.abs(accelY) * INERTIA_FORCE * 18;
-            forceW -= Math.abs(accelY) * INERTIA_FORCE * 10;
+            forceH += Math.abs(accelY) * INERTIA_FORCE * 45;
+            forceW -= Math.abs(accelY) * INERTIA_FORCE * 25;
 
-            /* Sustained velocity also deforms (drag stretching) */
-            forceW += Math.abs(velX) * INERTIA_FORCE * 0.8;
-            forceH += Math.abs(velY) * INERTIA_FORCE * 0.8;
-            forceW -= Math.abs(velY) * INERTIA_FORCE * 0.4;
-            forceH -= Math.abs(velX) * INERTIA_FORCE * 0.4;
+            /* Diagonal: cross-axis coupling */
+            var diagForce = Math.min(Math.abs(accelX), Math.abs(accelY)) * INERTIA_FORCE * 12;
+            forceW += diagForce;
+            forceH += diagForce;
+
+            /* Sustained velocity deforms */
+            forceW += Math.abs(velX) * INERTIA_FORCE * 2;
+            forceH += Math.abs(velY) * INERTIA_FORCE * 2;
+            forceW -= Math.abs(velY) * INERTIA_FORCE * 1;
+            forceH -= Math.abs(velX) * INERTIA_FORCE * 1;
           }
 
           prevVelX = velX;
