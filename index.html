@@ -177,7 +177,7 @@
       display: grid;
       grid-template-columns: subgrid;
       padding-top: 88px;
-      padding-bottom: 96px;
+      padding-bottom: 56px;
       align-content: start;
     }
 
@@ -309,32 +309,87 @@
       color: var(--accent);
     }
 
+    /* ── Role slot machine ── */
+
     /* ── Slot machine ── */
 
-    .slot-wrapper {
+    .glass-pill-wrap {
+      position: relative;
+      display: inline;
+    }
+
+    .glass-words {
       display: inline-block;
       position: relative;
+      z-index: 0;
       overflow: hidden;
-      vertical-align: bottom;
       height: 1.7em;
-      top: 0.2px;
+      vertical-align: bottom;
     }
 
-    .slot-word {
-      display: inline-block;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+    .glass-word {
+      display: block;
+      text-align: center;
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
-    .slot-word.out {
-      opacity: 0;
-      transform: translateY(-0.3em);
-      position: absolute;
-    }
-
-    .slot-word.in {
+    .glass-word.active {
       opacity: 1;
       transform: translateY(0);
     }
+
+    .glass-word.out-up {
+      opacity: 0;
+      transform: translateY(-100%);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+    }
+
+    .glass-word.in-below {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+
+    /* ── Glass pill ── */
+
+    .glass-pill {
+      position: fixed;
+      z-index: 10;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      will-change: transform;
+      border-radius: 9999px;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.15) 0%,
+        rgba(255,255,255,0.04) 100%
+      );
+      border-top: 0.5px solid rgba(255,255,255,0.4);
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.06),
+        0 2px 8px rgba(0,0,0,0.1),
+        inset 0 1px 6px rgba(255,255,255,0.12),
+        inset 0 -1px 4px rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] .glass-pill {
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.08) 0%,
+        rgba(255,255,255,0.02) 100%
+      );
+      border-top-color: rgba(255,255,255,0.12);
+      box-shadow:
+        0 0 0 0.5px rgba(255,255,255,0.05),
+        0 2px 8px rgba(0,0,0,0.25),
+        inset 0 1px 6px rgba(255,255,255,0.06),
+        inset 0 -1px 4px rgba(0,0,0,0.15);
+    }
+
+    .glass-pill:active { cursor: grabbing; }
 
     /* ── Item image preview ── */
 
@@ -422,7 +477,7 @@
       display: grid;
       grid-template-columns: repeat(2, 184px);
       column-gap: var(--gutter);
-      padding-top: 80px;
+      padding-top: 40px;
       padding-bottom: 0;
       align-content: start;
     }
@@ -545,7 +600,7 @@
 
       .entrance-bio,
       .entrance-role {
-        grid-column: 1 / span 3;
+        grid-column: 1 / span 2;
       }
 
     }
@@ -561,7 +616,7 @@
 
       .entrance-bio,
       .entrance-role {
-        grid-column: 1 / span 3;
+        grid-column: 1 / span 2;
       }
     }
 
@@ -662,6 +717,7 @@
 </head>
 <body>
 
+
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
     <div class="toggle-track">
       <svg class="icon-moon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -691,7 +747,7 @@
       <h1 class="entrance-name"><span class="bio-hover" data-bio-image="assets/renn.png">Renato Valdés-Olmos</span></h1>
       <p class="entrance-role">Designer, builder, investor</p>
       <div class="entrance-bio">
-        <p>I lead <span class="slot-wrapper" id="slot"></span> at companies that are trying to <br>do something that matters. I've done it at <span class="bio-hover bio-link" data-bio-image="assets/lyft-team.jpg">Lyft</span>, <span class="bio-hover bio-link" data-bio-image="assets/grammarly-team.jpg">Grammarly</span>, and <span class="bio-hover bio-link" data-bio-image="assets/honor-team.jpg">Honor</span>; from founding stages through scale.</p>
+        <p>I lead <span class="glass-pill-wrap"><span class="glass-words" id="glassWords"></span></span> at companies that are trying to <br>do something that matters. I've done it at <span class="bio-hover bio-link" data-bio-image="assets/lyft-team.jpg">Lyft</span>, <span class="bio-hover bio-link" data-bio-image="assets/grammarly-team.jpg">Grammarly</span>, and <span class="bio-hover bio-link" data-bio-image="assets/honor-team.jpg">Honor</span>; from founding stages through scale.</p>
         <p>Right now I'm raising two boys and helping to build <a href="https://growthx.ai" class="bio-link" target="_blank" rel="noopener">GrowthX</a> and <a href="https://noord.vc" class="bio-link" target="_blank" rel="noopener">Noord</a>.</p>
       </div>
       <a href="mailto:contact@renatovaldes.com" class="email-link">contact@renatovaldes.com</a>
@@ -968,38 +1024,50 @@
       });
     })();
 
-    /* ── Slot machine ── */
+    /* ── Glass word rotation ── */
     (function () {
-      var words = ['design', 'brand', 'product', 'engineering', 'marketing'];
-      var wrapper = document.getElementById('slot');
+      var words = ['engineering', 'design', 'product', 'marketing'];
+      var container = document.getElementById('glassWords');
       var current = 0;
 
+      /* Measure widest word to fix container width */
+      var measure = document.createElement('span');
+      measure.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;width:auto;font:inherit;';
+      container.parentElement.appendChild(measure);
+      var maxW = 0;
+      words.forEach(function (w) {
+        measure.textContent = w;
+        if (measure.offsetWidth > maxW) maxW = measure.offsetWidth;
+      });
+      measure.parentElement.removeChild(measure);
+      container.style.width = (maxW + 4) + 'px';
+
+      /* Create first word */
       var span = document.createElement('span');
-      span.className = 'slot-word in';
+      span.className = 'glass-word active';
       span.textContent = words[0];
-      wrapper.appendChild(span);
+      container.appendChild(span);
 
       setInterval(function () {
-        var old = wrapper.querySelector('.slot-word.in');
-        old.className = 'slot-word out';
+        var old = container.querySelector('.glass-word.active');
+        old.className = 'glass-word out-up';
 
         current = (current + 1) % words.length;
         var next = document.createElement('span');
-        next.className = 'slot-word in';
+        next.className = 'glass-word in-below';
         next.textContent = words[current];
-        next.style.opacity = '0';
-        next.style.transform = 'translateY(0.3em)';
-        wrapper.appendChild(next);
+        container.appendChild(next);
 
         requestAnimationFrame(function () {
-          next.style.opacity = '';
-          next.style.transform = '';
+          requestAnimationFrame(function () {
+            next.className = 'glass-word active';
+          });
         });
 
         setTimeout(function () {
           if (old.parentNode) old.parentNode.removeChild(old);
-        }, 300);
-      }, 2000);
+        }, 450);
+      }, 2400);
     })();
 
     /* ── Bio hover previews ── */
@@ -1049,6 +1117,300 @@
           }, 60);
         });
       });
+    })();
+  </script>
+
+  <!-- Glass pill element -->
+  <div class="glass-pill" id="glassPill"></div>
+
+  <script>
+    /* ── Glass pill: position + drag with spring physics ── */
+    (function () {
+      var pill = document.getElementById('glassPill');
+      var wordsEl = document.getElementById('glassWords');
+      if (!pill || !wordsEl) return;
+
+      var PAD = 10;
+      var tx = 0, ty = 0;
+      var homeLeft = 0, homeTop = 0;
+      var dragging = false, springAnim = null;
+      var startMouseX, startMouseY, startTx, startTy;
+      var STIFFNESS = 160, DAMPING = 12, MASS = 1;
+
+      function positionPill() {
+        var r = wordsEl.getBoundingClientRect();
+        homeLeft = r.left - PAD + window.scrollX;
+        homeTop = r.top - 4 + window.scrollY;
+        if (!dragging && !springAnim) {
+          pill.style.left = (r.left - PAD) + 'px';
+          pill.style.top = (r.top - 4) + 'px';
+          pill.style.width = (r.width + PAD * 2) + 'px';
+          pill.style.height = (r.height + 8) + 'px';
+        }
+      }
+
+      positionPill();
+      window.addEventListener('resize', function () { positionPill(); buildLens(); });
+      window.addEventListener('scroll', positionPill);
+
+      /* ── Generate smooth convex lens displacement map ── */
+      function buildLens() {
+        var w = Math.round(pill.offsetWidth) || 180;
+        var h = Math.round(pill.offsetHeight) || 36;
+        /* High-res canvas for smooth edges */
+        var scale = 2;
+        var cw = w * scale, ch = h * scale;
+        var canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        var ctx = canvas.getContext('2d');
+        var img = ctx.createImageData(cw, ch);
+        var data = img.data;
+        var cx = cw / 2, cy = ch / 2, rx = cw / 2, ry = ch / 2;
+
+        for (var py = 0; py < ch; py++) {
+          for (var px = 0; px < cw; px++) {
+            var idx = (py * cw + px) * 4;
+            var nx = (px - cx) / rx;
+            var ny = (py - cy) / ry;
+            /* Elliptical distance */
+            var d = Math.sqrt(nx * nx + ny * ny);
+
+            if (d >= 0.92) {
+              /* Smooth edge fade — refraction at rim */
+              var edge = Math.min(1, (d - 0.92) / 0.08);
+              var angle = Math.atan2(ny, nx);
+              var strength = (1 - edge) * 0.15;
+              data[idx]     = Math.round(128 + Math.cos(angle) * strength * 127);
+              data[idx + 1] = Math.round(128 + Math.sin(angle) * strength * 127);
+            } else {
+              /* Magnify: inward pull (zoom) + edge refraction */
+              var t = d / 0.92;
+              var mag = (1 - t * t) * 0.18; /* magnification: inward pull */
+              var refract = Math.sin(t * Math.PI * 0.5) * 0.2; /* edge refraction: outward */
+              var net = refract - mag; /* combine: edges push out, center pulls in */
+              var angle = Math.atan2(ny, nx);
+              data[idx]     = Math.round(128 + Math.cos(angle) * net * 127);
+              data[idx + 1] = Math.round(128 + Math.sin(angle) * net * 127);
+            }
+            data[idx + 2] = 128;
+            data[idx + 3] = 255;
+          }
+        }
+        ctx.putImageData(img, 0, 0);
+        var dataUrl = canvas.toDataURL();
+
+        /* Remove old SVG */
+        var old = document.getElementById('pillLensSVG');
+        if (old) old.remove();
+
+        var ns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(ns, 'svg');
+        svg.id = 'pillLensSVG';
+        svg.setAttribute('style', 'position:absolute;width:0;height:0');
+        svg.setAttribute('color-interpolation-filters', 'sRGB');
+
+        var filter = document.createElementNS(ns, 'filter');
+        filter.id = 'pillLens';
+        filter.setAttribute('filterUnits', 'userSpaceOnUse');
+        filter.setAttribute('x', '0'); filter.setAttribute('y', '0');
+        filter.setAttribute('width', w); filter.setAttribute('height', h);
+
+        var feImg = document.createElementNS(ns, 'feImage');
+        feImg.setAttribute('href', dataUrl);
+        feImg.setAttribute('x', '0'); feImg.setAttribute('y', '0');
+        feImg.setAttribute('width', w); feImg.setAttribute('height', h);
+        feImg.setAttribute('result', 'map');
+        filter.appendChild(feImg);
+
+        var feDisp = document.createElementNS(ns, 'feDisplacementMap');
+        feDisp.setAttribute('in', 'SourceGraphic');
+        feDisp.setAttribute('in2', 'map');
+        feDisp.setAttribute('scale', '40');
+        feDisp.setAttribute('xChannelSelector', 'R');
+        feDisp.setAttribute('yChannelSelector', 'G');
+        filter.appendChild(feDisp);
+
+        filter.appendChild(feDisp);
+        svg.appendChild(filter);
+        document.body.appendChild(svg);
+
+        pill.style.backdropFilter = 'url(#pillLens)';
+        pill.style.webkitBackdropFilter = 'url(#pillLens)';
+      }
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(buildLens);
+      });
+
+      /* Deformation: animate width/height with spring physics */
+      var prevMx = 0, prevMy = 0, velX = 0, velY = 0;
+      var baseW = 0, baseH = 0;
+      var dw = 0, dh = 0, dwV = 0, dhV = 0;
+      var heldDW = 0, heldDH = 0;
+      var JIGGLE_STIFF = 180, JIGGLE_DAMP = 6;
+      var deformAnim = null;
+
+      function applyTransform() {
+        var w = baseW + dw;
+        var h = baseH + dh;
+        var offX = -dw / 2;
+        var offY = -dh / 2;
+        pill.style.width = w + 'px';
+        pill.style.height = h + 'px';
+        pill.style.transform =
+          'translateX(' + (tx + offX) + 'px) translateY(' + (ty + offY) + 'px)';
+      }
+
+      function startDeformLoop() {
+        if (deformAnim) return;
+        var last = performance.now();
+
+        function tick(now) {
+          var dt = Math.min((now - last) / 1000, 0.032);
+          last = now;
+
+          var targetDW = dragging ? heldDW : 0;
+          var targetDH = dragging ? heldDH : 0;
+          dwV += (-JIGGLE_STIFF * (dw - targetDW) - JIGGLE_DAMP * dwV) * dt;
+          dw += dwV * dt;
+          dhV += (-JIGGLE_STIFF * (dh - targetDH) - JIGGLE_DAMP * dhV) * dt;
+          dh += dhV * dt;
+
+          applyTransform();
+
+          var settled = !dragging &&
+            Math.abs(dw) < 0.2 && Math.abs(dh) < 0.2 &&
+            Math.abs(dwV) < 0.5 && Math.abs(dhV) < 0.5;
+
+          if (settled && !springAnim) {
+            dw = 0; dh = 0;
+            deformAnim = null;
+            return;
+          }
+          deformAnim = requestAnimationFrame(tick);
+        }
+        deformAnim = requestAnimationFrame(tick);
+      }
+
+      pill.addEventListener('mousedown', grab);
+      pill.addEventListener('touchstart', grab, { passive: false });
+
+      function grab(e) {
+        e.preventDefault();
+        if (springAnim) { cancelAnimationFrame(springAnim); springAnim = null; }
+
+        dragging = true;
+        var pt = e.touches ? e.touches[0] : e;
+        startMouseX = pt.clientX;
+        startMouseY = pt.clientY;
+        prevMx = pt.clientX;
+        prevMy = pt.clientY;
+        startTx = tx;
+        startTy = ty;
+        pill.style.cursor = 'grabbing';
+
+        /* Capture rest dimensions */
+        baseW = pill.offsetWidth;
+        baseH = pill.offsetHeight;
+
+        /* Held shape: narrower and taller */
+        heldDW = -baseW * 0.12;
+        heldDH = baseH * 0.3;
+        dw = -baseW * 0.18;
+        dh = baseH * 0.4;
+
+        jiggleVSx = 0; jiggleVSy = 0; jiggleVRot = 0;
+        startDeformLoop();
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', release);
+        document.addEventListener('touchend', release);
+      }
+
+      function drag(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        var pt = e.touches ? e.touches[0] : e;
+
+        /* Track velocity */
+        velX = pt.clientX - prevMx;
+        velY = pt.clientY - prevMy;
+        prevMx = pt.clientX;
+        prevMy = pt.clientY;
+
+        tx = startTx + (pt.clientX - startMouseX);
+        ty = startTy + (pt.clientY - startMouseY);
+
+        /* Velocity-based squash/stretch */
+        var speed = Math.sqrt(velX * velX + velY * velY);
+        /* Velocity-based size deformation */
+        var stretch = Math.min(speed * 0.6, 14);
+        var angle = Math.atan2(velY, velX);
+        var cosA = Math.abs(Math.cos(angle));
+        var sinA = Math.abs(Math.sin(angle));
+        dw = heldDW + stretch * cosA - stretch * 0.5 * sinA;
+        dh = heldDH + stretch * sinA - stretch * 0.5 * cosA;
+
+
+        applyTransform();
+      }
+
+      function release() {
+        if (!dragging) return;
+        dragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('mouseup', release);
+        document.removeEventListener('touchend', release);
+        pill.style.cursor = '';
+
+        /* Release: target back to rest pill shape with wobble */
+        heldDW = 0;
+        heldDH = 0;
+        dwV = -velX * 3;
+        dhV = -velY * 3;
+
+        /* Spring physics snap-back */
+        var vx = 0, vy = 0;
+        var lastTime = performance.now();
+
+        function step(now) {
+          var dt = Math.min((now - lastTime) / 1000, 0.032);
+          lastTime = now;
+
+          /* Position spring */
+          var ax = (-STIFFNESS * tx - DAMPING * vx) / MASS;
+          var ay = (-STIFFNESS * ty - DAMPING * vy) / MASS;
+          vx += ax * dt; vy += ay * dt;
+          tx += vx * dt; ty += vy * dt;
+
+          /* Size spring */
+          dwV += (-JIGGLE_STIFF * dw - JIGGLE_DAMP * dwV) * dt;
+          dw += dwV * dt;
+          dhV += (-JIGGLE_STIFF * dh - JIGGLE_DAMP * dhV) * dt;
+          dh += dhV * dt;
+
+          applyTransform();
+
+          var posSettled = Math.abs(tx) < 0.1 && Math.abs(ty) < 0.1 &&
+                           Math.abs(vx) < 0.5 && Math.abs(vy) < 0.5;
+          var sizeSettled = Math.abs(dw) < 0.2 && Math.abs(dh) < 0.2 &&
+                            Math.abs(dwV) < 0.5 && Math.abs(dhV) < 0.5;
+
+          if (posSettled && sizeSettled) {
+            tx = 0; ty = 0; dw = 0; dh = 0;
+            pill.style.transform = '';
+            pill.style.width = '';
+            pill.style.height = '';
+            springAnim = null;
+            positionPill();
+            return;
+          }
+          springAnim = requestAnimationFrame(step);
+        }
+        springAnim = requestAnimationFrame(step);
+      }
     })();
   </script>
 
