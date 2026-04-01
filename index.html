@@ -1234,8 +1234,8 @@
         svg.appendChild(filter);
         document.body.appendChild(svg);
 
-        pill.style.backdropFilter = 'url(#pillLens)';
-        pill.style.webkitBackdropFilter = 'url(#pillLens)';
+        pill.style.backdropFilter = 'url(#pillLens) blur(0.6px)';
+        pill.style.webkitBackdropFilter = 'url(#pillLens) blur(0.6px)';
       }
 
       requestAnimationFrame(function () {
